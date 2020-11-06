@@ -54,11 +54,10 @@ def receiveOnePing(mySocket, ID, timeout, destAddr):
         type, code, mychecksum, packetID, sequence = struct.unpack("bbHHh", icmpHeader)
     
         if type == 0 and packetID == ID:  # type should be 0
-            byte_in_double = struct.calcsize("!d")
-            timeSent = struct.unpack("!d", recPacket[28:28 + byte_in_double])[0]
-            delay = timeReceived - timeSent
-            ttl = ord(struct.unpack("!c", recPacket[8:9])[0].decode())
-            return (delay, ttl, byte_in_double)
+            byte_in_double = struct.calcsize("d")
+            timeSent = struct.unpack("d", recPacket[28:28 + byte_in_double])[0]
+            delay = round((timeReceived - timeSent)*1000, 2)
+            return (delay)
 
         # Fill in end
         timeLeft = timeLeft - howLongInSelect
@@ -114,23 +113,20 @@ def ping(host, timeout=1):
     dest = gethostbyname(host)
     print("Pinging " + dest + " using Python:")
     print("")
-    
     # Calculate vars values and return them
-    t1 = time.time()
-    t2 = time.time()
-    rtt = [(t2 - t1)]
-    packet_min = min(rtt)
-    #packet_avg = sum(delay)/len(delay)
-    packet_max = max(rtt)
-    vars = [str(round(packet_min, 2)), str(round(packet_max, 2))] #,str(round(stdev, 2)) # str(round(packet_avg, 2)),
     
     # Send ping requests to a server separated by approximately one second
+    trip = []
     for i in range(0,4):
-       delay = doOnePing(dest, timeout)
-       print(delay)
-       time.sleep(1)  # one second
-       
-    return vars
+        delay = doOnePing(dest, timeout)
+        print(delay)
+        trip.append(delay)
+        time.sleep(1)  # one second
+        mean = sum(trip) / len(trip) 
+        variance = sum([((x - mean) ** 2) for x in trip]) / len(trip) 
+        stdev_var = variance ** 0.5
+        vars = [str(min(trip)), str(round(sum(trip)/len(trip), 2)), str(max(trip)), str(round(stdev_var,2))]
+    print(vars)
 
 if __name__ == '__main__':
-   ping("google.co.il")
+    ping("google.co.il")
