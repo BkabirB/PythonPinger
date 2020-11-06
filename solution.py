@@ -128,5 +128,5 @@ def ping(host, timeout=1):
     delay = int(delay[0]*1000)
     print("round-trip min/max = " + str(round(min(delay),2) + str(round(max(delay),2))
 
-if __name__ == '__main__':
-    ping("google.co.il")
+
+ping("google.co.il") 
