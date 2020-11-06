@@ -114,9 +114,9 @@ def ping(host, timeout=1):
     print("Pinging " + dest + " using Python:")
     print("")
     # Calculate vars values and return them
-    header = struct.pack("bbHHh", ICMP_ECHO_REQUEST, 0, myChecksum, ID, 1)
-    data = struct.pack("d", time.time())
-    packet = header + data
+    #header = struct.pack("bbHHh", ICMP_ECHO_REQUEST, 0, myChecksum, ID, 1)
+    #data = struct.pack("d", time.time())
+    #packet = header + data
     #vars = [str(round(min(packet), 2)), str(round((sum(packet)/len(packet)), 2)), str(round(max(packet), 2)),str(round(stdev(stdev_var), 2))]
     # Send ping requests to a server separated by approximately one second
     for i in range(0,4):
