@@ -3,6 +3,7 @@ import os
 import sys
 import struct
 import time
+import requests
 import select
 import binascii
 # Should use stdev
@@ -115,18 +116,21 @@ def ping(host, timeout=1):
     print("Pinging " + dest + " using Python:")
     print("")
     # Calculate vars values and return them
-    #packet_min = min(timeReceived - timeSent)*1000
+    t1 = time.time()
+    r = requests.get(ping)
+    t2 = time.time()
+    rtt = (t2 - t1)*1000 
+    packet_min = min(rtt)
     #packet_avg = sum(delay)/len(delay)
-    #packet_max = max(timeReceived - timeSent)*1000
-    #vars = [str(round(packet_min, 2)), str(round(packet_max, 2))] #,str(round(stdev, 2)) # str(round(packet_avg, 2)),
+    packet_max = max(rtt)
+    vars = [str(round(packet_min, 2)), str(round(packet_max, 2))] #,str(round(stdev, 2)) # str(round(packet_avg, 2)),
     # Send ping requests to a server separated by approximately one second
     for i in range(0,4):
        delay = doOnePing(dest, timeout)
-       rtt = (delay[0]*1000)
        print(delay)
        time.sleep(1)  # one second
        
-    print("round-trip min/max = " + str(round(min(rtt),2)) + str(round(max(rtt),2)))
+    print("round-trip min/max = " + vars)
 
 if __name__ == '__main__':
    ping("google.co.il")
