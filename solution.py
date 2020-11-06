@@ -8,7 +8,8 @@ import binascii
 # Should use stdev
 
 ICMP_ECHO_REQUEST = 8
-
+header = struct.pack("bbHHh", ICMP_ECHO_REQUEST, 0, myChecksum, ID, 1)
+data = struct.pack("d", time.time())
 
 def checksum(string):
     csum = 0
@@ -108,20 +109,19 @@ def doOnePing(destAddr, timeout):
     return delay
 
 
-def ping(host, timeout=1):
+def ping(host, timeout=1000):
     # timeout=1 means: If one second goes by without a reply from the server,  	# the client assumes that either the client's ping or the server's pong is lost
     dest = gethostbyname(host)
     print("Pinging " + dest + " using Python:")
     print("")
     # Calculate vars values and return them
-    header = struct.pack("bbHHh", ICMP_ECHO_REQUEST, 0, myChecksum, ID, 1)
-    data = struct.pack("d", time.time())
     vars = [str(round(min(header+data), 2)), str(round((sum(header+data)/len(header+data)), 2)), str(round(max(header+data), 2)),str(round(stdev(stdev_var), 2))]
     # Send ping requests to a server separated by approximately one second
     for i in range(0,4):
         delay = doOnePing(dest, timeout)
         print(delay)
         time.sleep(1000)  # one thousand millisecond
+
     return vars
 
 if __name__ == '__main__':
