@@ -120,15 +120,17 @@ def ping(host, timeout=1):
     dest = gethostbyname(host)
     print("Pinging " + dest + " using Python:")
     print("")
+    
     # Calculate vars values and return them
-    global RTT, min_RTT, max_RTT, sum_RTT, len_RTT
-    RTT = (timeReceived - timeSent)*1000
-    len_RTT += 1
-    sum_RTT += RTT
+    global min_RTT, max_RTT, sum_RTT, len_RTT
+    len_RTT = 0
+    sum_RTT = 0
     avg_RTT = sum_RTT/len_RTT
-    min_RTT = min(min_RTT, RTT)
-    max_RTT = max(max_RTT, RTT)
-    vars = [str(round(min_RTT, 2)), str(round(avg_RTT, 2)), str(round(max_RTT, 2)),str(round(stdev(RTT), 2))]
+    min_RTT = float('+inf')
+    max_RTT = float('-inf')
+    
+    vars = [str(round(min_RTT, 2)), str(round(avg_RTT, 2)), str(round(max_RTT, 2)),str(round(stdev(len_RTT), 2))]
+    
     # Send ping requests to a server separated by approximately one second
     for i in range(0,4):
         delay = doOnePing(dest, timeout)
