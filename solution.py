@@ -121,5 +121,4 @@ def ping(host, timeout=1):
         time.sleep(1)  # one second
     return delay
 
-if __name__ == '__main__':
-    ping("google.co.il")
+ping("74.6.231.21")
