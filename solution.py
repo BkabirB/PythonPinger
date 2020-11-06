@@ -55,7 +55,7 @@ def receiveOnePing(mySocket, ID, timeout, destAddr):
     
         if type == 0 and packetID == ID:  # type should be 0
             byte_in_double = struct.calcsize("!d")
-            timeSent = struct.unpack("!d", recPacket[28: 28 + byte_in_double])[0]
+            timeSent = struct.unpack("!d", recPacket[28:28 + byte_in_double])[0]
             delay = timeReceived - timeSent
             ttl = ord(struct.unpack("!c", recPacket[8:9])[0].decode())
             return (delay, ttl, byte_in_double)
@@ -115,16 +115,18 @@ def ping(host, timeout=1):
     print("Pinging " + dest + " using Python:")
     print("")
     # Calculate vars values and return them
-    packet_min = min(timeReceived - timeSent)*1000
+    #packet_min = min(timeReceived - timeSent)*1000
     #packet_avg = sum(delay)/len(delay)
-    packet_max = max(timeReceived - timeSent)*1000
-    vars = [str(round(packet_min, 2)), str(round(packet_max, 2))] #,str(round(stdev, 2)) # str(round(packet_avg, 2)),
+    #packet_max = max(timeReceived - timeSent)*1000
+    #vars = [str(round(packet_min, 2)), str(round(packet_max, 2))] #,str(round(stdev, 2)) # str(round(packet_avg, 2)),
     # Send ping requests to a server separated by approximately one second
     for i in range(0,4):
        delay = doOnePing(dest, timeout)
        print(delay)
        time.sleep(1)  # one second
-    print("round-trip min/max = " + vars)
+       
+    delay = int(delay[0]*1000)
+    print("round-trip min/max = " + str(round(min(delay),2) + str(round(max(delay),2))
 
 if __name__ == '__main__':
     ping("google.co.il")
