@@ -51,11 +51,11 @@ def receiveOnePing(mySocket, ID, timeout, destAddr):
 
         # Fetch the ICMP header from the IP packet
         icmpHeader = recPacket[20:28]
-        icmptype, code, mychecksum, packetID, sequence = struct.unpack("bbHHh", icmpHeader)
-        
-        if icmptype != 8 and packetID == ID:
+        icmpType, code, mychecksum, packetID, sequence = struct.unpack("bbHHh", icmpHeader)
+    
+        if type != 8 and packetID == ID:
             bytesInDouble = struct.calcsize("d")
-            timeSent = struct.unpack("d", recPacket[20:28 + bytesInDouble]) [0]
+            timeSent = struct.unpack("d", recPacket[28:28 + bytesInDouble])[0]
             return timeReceived - timeSent
 
         # Fill in end
@@ -119,6 +119,7 @@ def ping(host, timeout=1):
         delay = doOnePing(dest, timeout)
         print(delay)
         time.sleep(1)  # one second
+
     return vars
 
 if __name__ == '__main__':
