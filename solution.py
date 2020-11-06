@@ -117,7 +117,6 @@ def ping(host, timeout=1):
     print("")
     # Calculate vars values and return them
     t1 = time.time()
-    r = requests.get(ping)
     t2 = time.time()
     rtt = (t2 - t1)*1000 
     packet_min = min(rtt)
