@@ -49,6 +49,7 @@ def receiveOnePing(mySocket, ID, timeout, destAddr):
         recPacket, addr = mySocket.recvfrom(1024)
 
         # Fill in start
+        
 
         # Fetch the ICMP header from the IP packet
         type, code, checksum, id, seq = struct.unpack('bbHHh', recPacket[20:28])
@@ -101,7 +102,6 @@ def sendOnePing(mySocket, destAddr, ID):
 
     header = struct.pack("bbHHh", ICMP_ECHO_REQUEST, 0, myChecksum, ID, 1)
     packet = header + data
-    
 
     mySocket.sendto(packet, (destAddr, 1))  # AF_INET address must be tuple, not str
 
@@ -130,28 +130,23 @@ def ping(host, timeout=1):
     rtt_sum = 0
     rtt_cnt = 0
     cnt = 0
-    
     # timeout=1 means: If one second goes by without a reply from the server,  	# the client assumes that either the client's ping or the server's pong is lost
     dest = gethostbyname(host)
     print("Pinging " + dest + " using Python:")
-    print("")
-    
     # Calculate vars values and return them
-    #vars = [str(round(min_RTT, 2)), str(round(avg_RTT, 2)), str(round(max_RTT, 2)),str(round(stdev(len_RTT), 2))]
-    
+    #  vars = [str(round(packet_min, 2)), str(round(packet_avg, 2)), str(round(packet_max, 2)),str(round(stdev(stdev_var), 2))]
     # Send ping requests to a server separated by approximately one second
     try:
         while True:
             cnt += 1
             print doOnePing(dest, timeout)
             time.sleep(1)
-            
     except KeyboardInterrupt:
         if cnt != 0:
             print '--- {} ping statistics ---'.format(host)
             print '{} packets transmitted, {} packets received, {:.1f}% packet loss'.format(cnt, rtt_cnt, 100.0 - rtt_cnt * 100.0 / cnt)
             if rtt_cnt != 0:
-                print 'round-trip min/avg/max {:.3f}/{:.3f}/{:.3f} ms'.format(rtt_min, rtt_sum / rtt_cnt, rtt_max)
+                print 'round-trip min/avg/max/stdev {:.3f}/{:.3f}/{:.3f}/{:.3f} ms'.format(rtt_min, rtt_sum / rtt_cnt, rtt_max, stdev(rtt_cnt))
 
 if __name__ == '__main__':
-   ping("google.co.il")
+    ping("google.co.il")
