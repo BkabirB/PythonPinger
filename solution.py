@@ -116,19 +116,10 @@ def ping(host, timeout=1):
     print("")
     
     # Send ping requests to a server separated by approximately one second
-    myID = os.getpid() & 0xFFFF  # Return the current process i
-    loss = 0
-    for i in range(0,4):
-        result = doOnePing(dest, timeout)
-        if not result:
-            print("Request timed out.")
-            loss += 1
-        else:
-            delay = int(result[0]*1000)
-            ttl = result[1]
-            bytes = result[2]
-            print("Received from " + dest + ": byte(s)=" + str(bytes) + " delay=" + str(delay) + "ms TTL=" + str(ttl))
-        time.sleep(1)  # one second
+   for i in range(0,4):
+       delay = doOnePing(dest, timeout)
+       print(delay)
+       time.sleep(1)  # one second
         
     # Calculate vars values and return them
     packet_min = min(delay)
