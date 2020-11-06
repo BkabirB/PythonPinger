@@ -35,7 +35,7 @@ def checksum(string):
 
 
 def receiveOnePing(mySocket, ID, timeout, destAddr):
-    global min_RTT, max_RTT, sum_RTT, len_RTT
+    global RTT, min_RTT, max_RTT, sum_RTT, len_RTT
     timeLeft = timeout
 
     while 1:
@@ -121,7 +121,7 @@ def ping(host, timeout=1):
     print("Pinging " + dest + " using Python:")
     print("")
     # Calculate vars values and return them
-    global min_RTT, max_RTT, sum_RTT, len_RTT
+    global RTT, min_RTT, max_RTT, sum_RTT, len_RTT
     RTT = (timeReceived - timeSent)*1000
     len_RTT += 1
     sum_RTT += RTT
