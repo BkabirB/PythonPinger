@@ -122,10 +122,10 @@ def ping(host, timeout=1):
        time.sleep(1)  # one second
         
     # Calculate vars values and return them
-    packet_min = min(delay)
-    packet_avg = sum(delay)/len(delay)
-    packet_max = max(delay)*1000
-    vars = [str(round(packet_min, 2)), str(round(packet_avg, 2)), str(round(packet_max, 2))] #,str(round(stdev, 2))
+    packet_min = min(timeReceived - timeSent)*1000
+    #packet_avg = sum(delay)/len(delay)
+    packet_max = max(timeReceived - timeSent)*1000
+    vars = [str(round(packet_min, 2)), str(round(packet_max, 2))] #,str(round(stdev, 2)) # str(round(packet_avg, 2)),
     print("round-trip = " + vars)
     return
 
