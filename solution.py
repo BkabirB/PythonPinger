@@ -86,9 +86,7 @@ def sendOnePing(mySocket, destAddr, ID):
 
     header = struct.pack("bbHHh", ICMP_ECHO_REQUEST, 0, myChecksum, ID, 1)
     packet = header + data
-    packet_min = min(packet)
-    packet_avg = sum(packet)/len(packet)
-    packet_max = max(packet)
+   
 
     mySocket.sendto(packet, (destAddr, 1))  # AF_INET address must be tuple, not str
 
@@ -116,6 +114,10 @@ def ping(host, timeout=1):
     print("Pinging " + dest + " using Python:")
     print("")
     # Calculate vars values and return them
+    packet = header + data
+    packet_min = min(packet)
+    packet_avg = sum(packet)/len(packet)
+    packet_max = max(packet)
     vars = [str(round(packet_min, 2)), str(round(packet_avg, 2)), str(round(packet_max, 2)),str(round(stdev(stdev_var), 2))]
     # Send ping requests to a server separated by approximately one second
     for i in range(0,4):
