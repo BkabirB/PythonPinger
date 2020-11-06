@@ -114,20 +114,17 @@ def ping(host, timeout=1):
     dest = gethostbyname(host)
     print("Pinging " + dest + " using Python:")
     print("")
-    
-    # Send ping requests to a server separated by approximately one second
-    for i in range(0,4):
-       delay = doOnePing(dest, timeout)
-       print(delay)
-       time.sleep(1)  # one second
-        
     # Calculate vars values and return them
     packet_min = min(timeReceived - timeSent)*1000
     #packet_avg = sum(delay)/len(delay)
     packet_max = max(timeReceived - timeSent)*1000
     vars = [str(round(packet_min, 2)), str(round(packet_max, 2))] #,str(round(stdev, 2)) # str(round(packet_avg, 2)),
-    print("round-trip = " + vars)
-    return
+    # Send ping requests to a server separated by approximately one second
+    for i in range(0,4):
+       delay = doOnePing(dest, timeout)
+       print(delay)
+       time.sleep(1)  # one second
+    print("round-trip min/max = " + vars)
 
 if __name__ == '__main__':
     ping("google.co.il")
