@@ -35,6 +35,7 @@ def checksum(string):
 
 
 def receiveOnePing(mySocket, ID, timeout, destAddr):
+    global min_RTT, max_RTT, sum_RTT, len_RTT
     timeLeft = timeout
 
     while 1:
@@ -57,6 +58,12 @@ def receiveOnePing(mySocket, ID, timeout, destAddr):
             bytesInDouble = struct.calcsize("d")
             timeSent = struct.unpack("d", recPacket[28:28 + bytesInDouble])[0]
             return timeReceived - timeSent
+            
+        RTT = (timeReceived - timeSent)*1000
+        len_RTT += 1
+        sum_RTT += RTT
+        min_RTT = min(min_RTT, RTT)
+        max_RTT = max(max_RTT, RTT)
 
         # Fill in end
         timeLeft = timeLeft - howLongInSelect
@@ -114,16 +121,20 @@ def ping(host, timeout=1):
     print("Pinging " + dest + " using Python:")
     print("")
     # Calculate vars values and return them
-    #header = struct.pack("bbHHh", ICMP_ECHO_REQUEST, 0, myChecksum, ID, 1)
-    #data = struct.pack("d", time.time())
-    #packet = header + data
-    #vars = [str(round(min(packet), 2)), str(round((sum(packet)/len(packet)), 2)), str(round(max(packet), 2)),str(round(stdev(stdev_var), 2))]
+    global min_RTT, max_RTT, sum_RTT, len_RTT
+    RTT = (timeReceived - timeSent)*1000
+    len_RTT += 1
+    sum_RTT += RTT
+    avg_RTT = sum_RTT/len_RTT
+    min_RTT = min(min_RTT, RTT)
+    max_RTT = max(max_RTT, RTT)
+    vars = [str(round(min_RTT, 2)), str(round(avg_RTT, 2)), str(round(max_RTT, 2)),str(round(stdev(RTT), 2))]
     # Send ping requests to a server separated by approximately one second
     for i in range(0,4):
         delay = doOnePing(dest, timeout)
         print(delay)
-        time.sleep(1)  # one thousand millisecond
-    return round(vars*1000, 2)
+        time.sleep(1)  # one second
+    return vars
 
 if __name__ == '__main__':
    ping("google.co.il")
