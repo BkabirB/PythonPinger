@@ -126,7 +126,7 @@ def ping(host, timeout=1):
         variance = sum([((x - mean) ** 2) for x in trip]) / len(trip) 
         stdev_var = variance ** 0.5
         vars = [str(min(trip)), str(round(sum(trip)/len(trip), 2)), str(max(trip)), str(round(stdev_var,2))]
-    print(vars)
+    return vars
 
 if __name__ == '__main__':
     ping("google.co.il")
