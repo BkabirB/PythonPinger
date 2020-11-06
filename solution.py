@@ -120,7 +120,6 @@ def ping(host, timeout=1):
         delay = doOnePing(dest, timeout)
         print(delay)
         time.sleep(1000)  # one thousand millisecond
-
     return vars
 
 if __name__ == '__main__':
