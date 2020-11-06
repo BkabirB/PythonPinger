@@ -5,12 +5,12 @@ import struct
 import time
 import select
 import binascii
-import statistics
+import math
 # Should use stdev
 
 
 ICMP_ECHO_REQUEST = 8
-
+rtt = range(1)
 
 def checksum(string):
     csum = 0
@@ -60,7 +60,7 @@ def receiveOnePing(mySocket, ID, timeout, destAddr):
         if type != 8 and packetID == ID:
             bytesInDouble = struct.calcsize("d")
             timeSent = struct.unpack("d", recPacket[28:28 + bytesInDouble])[0]
-            global rtt = timeReceived - timeSent
+            rtt = timeReceived - timeSent
             return rtt
 
         # Fill in end
@@ -122,8 +122,8 @@ def ping(host, timeout=1):
     packet_min = min(rtt)*1000
     packet_avg = sum(rtt)/len(rtt)*1000
     packet_max = max(rtt)*1000
-    stdev_var = statistics.stdev([rtt])*1000
-    vars = [str(round(packet_min, 2)), str(round(packet_avg, 2)), str(round(packet_max, 2)),str(round(stdev(stdev_var), 2))]
+    
+    vars = [str(round(packet_min, 2)), str(round(packet_avg, 2)), str(round(packet_max, 2))] #,str(round(stdev, 2))
     
     # Send ping requests to a server separated by approximately one second
     for i in range(0,4):
@@ -131,7 +131,7 @@ def ping(host, timeout=1):
         print(delay)
         time.sleep(1)  # one second
 
-    print("round-trip min/avg/max/stdev = " vars)
+    print("round-trip min/avg/max = " + vars)
 
 if __name__ == '__main__':
     ping("google.co.il")
