@@ -122,11 +122,11 @@ def ping(host, timeout=1):
     # Send ping requests to a server separated by approximately one second
     for i in range(0,4):
        delay = doOnePing(dest, timeout)
+       rtt = int(delay[0]*1000)
        print(delay)
        time.sleep(1)  # one second
        
-    delay = int(delay[0]*1000)
-    print("round-trip min/max = " + str(round(min(delay),2) + str(round(max(delay),2))
+    print("round-trip min/max = " + str(round(min(rtt),2)) + str(round(max(rtt),2)))
 
-
-ping("google.co.il") 
+if __name__ == '__main__':
+   ping("google.co.il")
