@@ -119,7 +119,7 @@ def ping(host, timeout=1):
     myID = os.getpid() & 0xFFFF  # Return the current process i
     loss = 0
     for i in range(0,4):
-        result = doOnePing(dest, myID, i, timeout)
+        result = doOnePing(dest, timeout)
         if not result:
             print("Request timed out.")
             loss += 1
