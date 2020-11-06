@@ -8,7 +8,7 @@ import binascii
 # Should use stdev
 
 ICMP_ECHO_REQUEST = 8
-rtt = range(1)
+
 
 def checksum(string):
     csum = 0
@@ -50,16 +50,15 @@ def receiveOnePing(mySocket, ID, timeout, destAddr):
         # Fill in start
 
         # Fetch the ICMP header from the IP packet
-        recPacket, addr = mySocket.recvfrom(1024)
-
         icmpHeader = recPacket[20:28]
         type, code, mychecksum, packetID, sequence = struct.unpack("bbHHh", icmpHeader)
     
-        if packetID == ID:
-            bytesInDouble = struct.calcsize("d")
-            timeSent = struct.unpack("d", recPacket[28:28 + bytesInDouble])[0]
-            rtt = timeReceived - timeSent
-            return rtt
+        if type == 0 and packetID == ID:  # type should be 0
+            byte_in_double = struct.calcsize("!d")
+            timeSent = struct.unpack("!d", recPacket[28: 28 + byte_in_double])[0]
+            delay = timeReceived - timeSent
+            ttl = ord(struct.unpack("!c", recPacket[8:9])[0].decode())
+            return (delay, ttl, byte_in_double)
 
         # Fill in end
         timeLeft = timeLeft - howLongInSelect
@@ -115,19 +114,29 @@ def ping(host, timeout=1):
     dest = gethostbyname(host)
     print("Pinging " + dest + " using Python:")
     print("")
-    # Calculate vars values and return them
-    packet_min = min(rtt)*1000
-    packet_avg = sum(rtt)/len(rtt)*1000
-    packet_max = max(rtt)*1000
-    vars = [str(round(packet_min, 2)), str(round(packet_avg, 2)), str(round(packet_max, 2))] #,str(round(stdev, 2))
     
     # Send ping requests to a server separated by approximately one second
-    for i in range(0,4):
-        delay = doOnePing(dest, timeout)
-        print(delay)
+    myID = os.getpid() & 0xFFFF  # Return the current process i
+    loss = 0
+    for i in range(4):
+        result = doOnePing(dest, myID, i, timeout)
+        if not result:
+            print("Request timed out.")
+            loss += 1
+        else:
+            delay = int(result[0]*1000)
+            ttl = result[1]
+            bytes = result[2]
+            print("Received from " + dest + ": byte(s)=" + str(bytes) + " delay=" + str(delay) + "ms TTL=" + str(ttl))
         time.sleep(1)  # one second
-
-    print ("round-trip min/avg/max = " + vars)
+        
+    # Calculate vars values and return them
+    packet_min = min(delay)
+    packet_avg = sum(delay)/len(delay)
+    packet_max = max(delay)*1000
+    vars = [str(round(packet_min, 2)), str(round(packet_avg, 2)), str(round(packet_max, 2))] #,str(round(stdev, 2))
+    print("round-trip = " + vars)
+    return
 
 if __name__ == '__main__':
     ping("google.co.il")
